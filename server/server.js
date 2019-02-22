@@ -164,7 +164,7 @@ if(process.env.NODE_ENV === 'production'){
     })
 }
 
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 3005;
 app.listen(port,()=>{
     console.log(`SERVER RUNNNING`)
 })
