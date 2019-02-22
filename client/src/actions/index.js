@@ -1,127 +1,135 @@
 import axios from 'axios';
+import {
+    GET_BOOK,
+    GET_BOOKS,
+    GET_BOOK_W_REVIEWER,
+    CLEAR_BOOK_W_REVIEWER,
+    ADD_BOOK,
+    CLEAR_NEWBOOK
+} from './types'
 
 export function getBooks(
     limit = 10,
     start = 0,
     order = 'asc',
     list = ''
-){
-    
+) {
+
     const request = axios.get(`/api/books?limit=${limit}&skip=${start}&order=${order}`)
-                    .then(response => {
-                            if(list){
-                                return [...list,...response.data]
-                            } else {
-                                return response.data
-                            }
-                        }
-                    )
+        .then(response => {
+            if (list) {
+                return [...list, ...response.data]
+            } else {
+                return response.data
+            }
+        }
+        )
 
     return {
-        type:'GET_BOOKS',
-        payload:request
+        type: GET_BOOKS,
+        payload: request
     }
 
 }
 
-export function getBookWithReviewer(id){
+export function getBookWithReviewer(id) {
     const request = axios.get(`/api/getBook?id=${id}`)
 
-    return (dispatch)=>{
-        request.then(({data})=>{
+    return (dispatch) => {
+        request.then(({ data }) => {
             let book = data;
 
             axios.get(`/api/getReviewer?id=${book.ownerId}`)
-            .then(({data})=>{
-                let response = {
-                    book,
-                    reviewer:data
-                }
+                .then(({ data }) => {
+                    let response = {
+                        book,
+                        reviewer: data
+                    }
 
-                dispatch({
-                    type:'GET_BOOK_W_REVIEWER',
-                    payload:response
+                    dispatch({
+                        type: GET_BOOK_W_REVIEWER,
+                        payload: response
+                    })
                 })
-            })
         })
     }
 }
 
-export function clearBookWithReviewer(){
+export function clearBookWithReviewer() {
     return {
-        type:'CLEAR_BOOK_W_REVIEWER',
-        payload:{
-            book:{},
-            reviewer:{}
+        type: CLEAR_BOOK_W_REVIEWER,
+        payload: {
+            book: {},
+            reviewer: {}
         }
     }
 }
 
-export function addBook(book){
-    const request = axios.post('/api/book',book)
+export function addBook(book) {
+    const request = axios.post('/api/book', book)
         .then(response => response.data);
 
     return {
-        type:'ADD_BOOK',
-        payload:request
+        type: ADD_BOOK,
+        payload: request
     }
 }
 export function clearNewBook() {
     return {
-        type:'CLEAR_NEWBOOK',
-        payload:{}
+        type: CLEAR_NEWBOOK,
+        payload: {}
     }
 }
 
-export function getUserPosts(userId){
+export function getUserPosts(userId) {
     const request = axios.get(`/api/user_posts?user=${userId}`)
-                    .then(response => response.data)
+        .then(response => response.data)
 
     return {
-        type:'GET_USER_POSTS',
-        payload:request
+        type: 'GET_USER_POSTS',
+        payload: request
     }
 }
 
-export function getBook(id){
+export function getBook(id) {
     const request = axios.get(`/api/getBook?id=${id}`)
-                    .then(response => response.data);
+        .then(response => response.data);
 
     return {
-        type:'GET_BOOK',
-        payload:request
+        type: GET_BOOK,
+        payload: request
     }
 }
 
 
-export function updateBook(data){
-    const request = axios.post(`/api/book_update`,data)
-                .then(response => response.data);
+export function updateBook(data) {
+    const request = axios.post(`/api/book_update`, data)
+        .then(response => response.data);
 
     return {
-        type:'UPDATE_BOOK',
-        payload:request
+        type: 'UPDATE_BOOK',
+        payload: request
     }
 
 }
 
-export function deleteBook(id){
+export function deleteBook(id) {
     const request = axios.delete(`/api/delete_book?id=${id}`)
-                    .then(response => response.data)
+        .then(response => response.data)
 
     return {
-        type:'DELETE_BOOK',
-        payload:request
+        type: 'DELETE_BOOK',
+        payload: request
     }
 }
 
-export function clearBook(){
-    return{
-        type:'CLEAR_BOOK',
-        payload:{
-            book:null,
-            updateBook:false,
-            postDeleted:false
+export function clearBook() {
+    return {
+        type: 'CLEAR_BOOK',
+        payload: {
+            book: null,
+            updateBook: false,
+            postDeleted: false
         }
     }
 }
@@ -129,52 +137,52 @@ export function clearBook(){
 
 /*========= USER ===========*/
 
-export function loginUser({email,password}){
-    const request = axios.post('/api/login',{email,password})
-                .then(response => response.data)
+export function loginUser({ email, password }) {
+    const request = axios.post('/api/login', { email, password })
+        .then(response => response.data)
 
     return {
-        type:'USER_LOGIN',
-        payload:request
+        type: 'USER_LOGIN',
+        payload: request
     }
 }
 
-export function auth(){
+export function auth() {
     const request = axios.get('/api/auth')
-                .then(response => response.data);
+        .then(response => response.data);
 
     return {
-        type:'USER_AUTH',
-        payload:request
+        type: 'USER_AUTH',
+        payload: request
     }
 
 }
 
-export function getUsers(){
+export function getUsers() {
     const request = axios.get(`/api/users`)
-                    .then(response => response.data);
-        
+        .then(response => response.data);
+
     return {
-        type:'GET_USER',
-        payload:request
+        type: 'GET_USER',
+        payload: request
     }
 }
 
 
-export function userRegister(user,userList){
-    const request = axios.post(`/api/register`,user)
+export function userRegister(user, userList) {
+    const request = axios.post(`/api/register`, user)
 
-    return (dispatch) =>{
-        request.then(({data})=>{
-            let users = data.success ? [...userList,data.user]:userList;
+    return (dispatch) => {
+        request.then(({ data }) => {
+            let users = data.success ? [...userList, data.user] : userList;
             let response = {
-                success:data.success,
+                success: data.success,
                 users
             }
 
             dispatch({
-                type:'USER_REGISTER',
-                payload:response
+                type: 'USER_REGISTER',
+                payload: response
             })
         })
     }
